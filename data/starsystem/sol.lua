@@ -1,3 +1,5 @@
+local Data = {}
+
 local effects = require("__core__.lualib.surface-render-parameter-effects")
 local asteroid_util = require("__space-age__.prototypes.planet.asteroid-spawn-definitions") -- The original asteroid spawn definitions from Space Age. Should be replaced as soon as possible to allow custom spawn definitions.
 -- local asteroid_util = require("asteroid_definitions.asteroid_util") -- New asteroid spawn definitions for when there's new definitions. It isn't ready yet.
@@ -970,9 +972,7 @@ for i, Planet in pairs(planets) do
 
 end
 
-log("Extending planets! " .. serpent.block(planets))
-
-data:extend(planets)
+Data.objects = planets
 
 --https://lua-api.factorio.com/latest/prototypes/SpaceConnectionPrototype.html
 local space_connections = {
@@ -1693,47 +1693,48 @@ for i, SpaceConnection in pairs(space_connections) do
     space_connections[i] = SpaceConnection -- Set the new space connection to the modified one.
 end
 
-data:extend(space_connections)
+Data.connections = space_connections
 
--- 定义灵石矿种类
-local kuang = {
-    { "iron-ore" },
-    { "copper-ore" },
-    { "stone" },
-    { "coal" },
-    { "uranium-ore" },
-    { "crude-oil" }
-}
-
-
--- 循环为每个星球添加自动放置控制和设置
-for _, planet in ipairs(planets) do
-    local planet_name = planet[1]
-    -- 为每个星球添加自动放置控制
-
-
-    if data.raw.planet[planet_name] then
-
-
-        for _, item in ipairs(kuang) do
-            local autoplace_control_name = item[1]
-            -- 为每个星球添加自动放置控制
-            data.raw.planet[planet_name].map_gen_settings.autoplace_controls[autoplace_control_name] = {
-                order = "a[" .. autoplace_control_name .. "]",
-                frequency = 1,
-                size = 1,
-                richness = 1,
-                distribution = "uniform",
-                starting_area_size = 1,
-                starting_area_order = "a[ore]",
-                has_starting_area = false
-            }
-            -- 为每个星球添加自动放置设置
-            data.raw.planet[planet_name].map_gen_settings.autoplace_settings.entity.settings[autoplace_control_name] = {
-                name = autoplace_control_name,
-                minimum_required = 0,
-                maximum = 10
-            }
-        end
-    end
-end
+-- Not sure what this does, but new content must be moved to a new file now.
+-- -- 定义灵石矿种类
+-- local kuang = {
+--     { "iron-ore" },
+--     { "copper-ore" },
+--     { "stone" },
+--     { "coal" },
+--     { "uranium-ore" },
+--     { "crude-oil" }
+-- }
+-- 
+-- 
+-- -- 循环为每个星球添加自动放置控制和设置
+-- for _, planet in ipairs(planets) do
+--     local planet_name = planet[1]
+--     -- 为每个星球添加自动放置控制
+-- 
+-- 
+--     if data.raw.planet[planet_name] then
+-- 
+-- 
+--         for _, item in ipairs(kuang) do
+--             local autoplace_control_name = item[1]
+--             -- 为每个星球添加自动放置控制
+--             data.raw.planet[planet_name].map_gen_settings.autoplace_controls[autoplace_control_name] = {
+--                 order = "a[" .. autoplace_control_name .. "]",
+--                 frequency = 1,
+--                 size = 1,
+--                 richness = 1,
+--                 distribution = "uniform",
+--                 starting_area_size = 1,
+--                 starting_area_order = "a[ore]",
+--                 has_starting_area = false
+--             }
+--             -- 为每个星球添加自动放置设置
+--             data.raw.planet[planet_name].map_gen_settings.autoplace_settings.entity.settings[autoplace_control_name] = {
+--                 name = autoplace_control_name,
+--                 minimum_required = 0,
+--                 maximum = 10
+--             }
+--         end
+--     end
+-- end
