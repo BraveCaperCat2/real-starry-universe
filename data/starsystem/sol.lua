@@ -15,13 +15,17 @@ local planets = {
     {
         type = "space-location", -- This may need to be changed to "planet".
         name = "sol", -- Similar to how the moon is called luna, the sun is called sol. This is actually more commonly used than luna as the word solar is derived from the word sol.
+        object_properties = {
+            type = "star", -- This object is a star.
+            parent_object = "black-hole", -- The object this star orbits.
+        },
         icon = "__core__/graphics/icons/starmap-star.png", -- This should eventually be replaced with a proper image.
         icon_size = 512,
         starmap_icon = "__core__/graphics/icons/starmap-star.png",
         starmap_icon_size = 512,
         gravity_pull = 21.7, -- The surface gravity of the sun, equal to 217 m/s. This shouldn't be 217, because 217 km/s is too fast for the average player's space platform or 2.17, because 2.17 doesn't add much challenge.
-        distance = 0, -- The sun is 0 distance away from the sun, so this should be 0.
-        orientation = 0 / 360, -- Orinetation doesn't matter for the sun.
+        distance = 500,
+        orientation = 170 / 360,
         magnitude = 5, -- The sizes of planets shown on star maps. 1 is the size of Earth (12,742km).  11.2 is the size of Jupiter (139,820).
         asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.nauvis_vulcanus, 0.9),
     },
@@ -904,9 +908,135 @@ local planets = {
             pressure = 0, -- 大气压为零
             gravity = 0.06, -- 重力极低
         },
+        prerequisite = "planet-discovery-asteroid-belt-outer",
     },
-
+    {
+        type = "space-location",
+        name = "rsu-solar-system-edge", -- Solar System Edge, but the real solar system instead of the space age one.
+        object_properties = {
+            type = "edge", -- This location is the edge of a star system.
+            parent_object = "sol", -- The star system this edge is the edge of.
+        },
+        icon = edge_png,
+        icon_size = 64,
+        gravity_pull = -10,
+        distance = 150, -- About 70 AU, not at all accurate (real value would be closer to 50,000 AU)
+        orientation = ( 359 / 360 ) - ( 45 / 360 ),
+        magnitude = 1,
+        asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.nauvis_vulcanus, 0.9),
+        prerequisite = "planet-discovery-asteroid-belt-outer",
+    },
+    {
+        type = "space-location",
+        name = "black-hole",
+        object_properties = {
+            type = "black-hole",
+            parent_object = nil
+        },
+        icon = "__real-starry-universe__/graphics/black-hole.png",
+        icon_size = 512,
+        gravity_pull = 512,
+        distance = 0,
+        orientation = 0 / 360,
+        magnitude = 10,
+        asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.nauvis_vulcanus, 0.9),
+        prerequisite = "planet-discovery-rsu-solar-system-edge",
+    },
+    {
+        type = "space-location",
+        name = "alpha-centauri",
+        object_properties = {
+            type = "barycenter",
+            barycenter_type = "star",
+            parent_object = "black-hole",
+        },
+        icon = "__real-starry-universe__/graphics/blank512.png",
+        icon_size = 512,
+        gravity_pull = -10,
+        distance = 500,
+        orientation = 270 / 360,
+        magnitude = 1,
+        asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.nauvis_vulcanus, 0.9),
+        prerequisite = "planet-discovery-rsu-solar-system-edge",
+    },
+    {
+        type = "space-location",
+        name = "alpha-centauri-edge",
+        object_properties = {
+            type = "edge", -- This location is the edge of a star system.
+            parent_object = "alpha-centauri", -- The star system this edge is the edge of.
+        },
+        icon = edge_png,
+        icon_size = 64,
+        gravity_pull = -10,
+        distance = 50, -- Placeholder value!
+        orientation = 120 / 360,
+        prerequisite = "planet-discovery-rsu-solar-system-edge",
+    },
+    {
+        type = "space-location", -- This may need to be changed to "planet".
+        name = "alpha-centauri-a", -- Alpha Centauri A (first star of Alpha Centauri)
+        object_properties = {
+            type = "star", -- This object is a star.
+            parent_object = "alpha-centauri", -- The barycenter this star orbits.
+        },
+        icon = "__core__/graphics/icons/starmap-star.png", -- This is just a placeholder until I can get a better image.
+        icon_size = 512,
+        starmap_icon = "__core__/graphics/icons/starmap-star.png", -- This is just a placeholder until I can get a better image.
+        starmap_icon_size = 512,
+        gravity_pull = 19.95, -- The surface gravity of Alpha Centauri A, equal to 199.526 m/s. This shouldn't be 199.526, because 199.526 km/s is too fast for the average player's space platform or 1.99, because 1.99 doesn't add much challenge.
+        distance = 10, -- Placeholder value!
+        orientation = 240 / 360,
+        magnitude = 5, -- The sizes of planets shown on star maps. 1 is the size of Earth (12,742km).  11.2 is the size of Jupiter (139,820).
+        asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.nauvis_vulcanus, 0.9),
+        prerequisite = "planet-discovery-rsu-solar-system-edge",
+    },
+    {
+        type = "space-location", -- This may need to be changed to "planet".
+        name = "alpha-centauri-b", -- Alpha Centauri B (second star of Alpha Centauri)
+        object_properties = {
+            type = "star", -- This object is a star.
+            parent_object = "alpha-centauri", -- The barycenter this star orbits.
+        },
+        icon = "__core__/graphics/icons/starmap-star.png", -- This is just a placeholder until I can get a better image.
+        icon_size = 512,
+        starmap_icon = "__core__/graphics/icons/starmap-star.png", -- This is just a placeholder until I can get a better image.
+        starmap_icon_size = 512,
+        gravity_pull = 23.44, -- The surface gravity of Alpha Centauri B, equal to 234.423 m/s. This shouldn't be 234.423, because 234.423 km/s is too fast for the average player's space platform or 2.34, because 2.34 doesn't add much challenge.
+        distance = 10, -- Placeholder value!
+        orientation = 120 / 360,
+        magnitude = 5, -- The sizes of planets shown on star maps. 1 is the size of Earth (12,742km).  11.2 is the size of Jupiter (139,820).
+        asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.nauvis_vulcanus, 0.9),
+        prerequisite = "planet-discovery-rsu-solar-system-edge",
+    },
+    {
+        type = "space-location", -- This may need to be changed to "planet".
+        name = "proxima-centauri", -- Proxima Centauri (third star of Alpha Centauri)
+        object_properties = {
+            type = "star", -- This object is a star.
+            parent_object = "alpha-centauri", -- The barycenter this star orbits.
+        },
+        icon = "__core__/graphics/icons/starmap-star.png", -- This is just a placeholder until I can get a better image.
+        icon_size = 512,
+        starmap_icon = "__core__/graphics/icons/starmap-star.png", -- This is just a placeholder until I can get a better image.
+        starmap_icon_size = 512,
+        gravity_pull = 15.84, -- The surface gravity of Proxima Centauri, equal to 1584.9 m/s. This shouldn't be 1584.9, because 1584.9 km/s is too fast for the average player's space platform or 1.58, because 1.58 doesn't add much challenge.
+        distance = 10, -- Placeholder value!
+        orientation = 0 / 360,
+        magnitude = 5, -- The sizes of planets shown on star maps. 1 is the size of Earth (12,742km).  11.2 is the size of Jupiter (139,820).
+        asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.nauvis_vulcanus, 0.9),
+        prerequisite = "planet-discovery-rsu-solar-system-edge",
+    },
 }
+
+-- Mod compatibility, in case a mod wants to add extra planets to RCU. They define the global value in their data stage if it doesn't already exist and then they can modify our planets or add new ones.
+if object_functions then
+    for _, object_function in pairs(object_functions) do
+        if object_function and type(object_function) == "function" then
+            object_function(planets)
+        end
+    end
+end
 
 for i, Planet in pairs(planets) do
     if not Planet.moon then
