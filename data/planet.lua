@@ -8,6 +8,7 @@ local planet_map_gen = require("data.planet-map-gen")
 local day = 24 * hour
 
 local placeholder_png = "__real-starry-universe__/graphics/planet.png"
+local edge_png = "__space-age__/graphics/icons/solar-system-edge.png"
 
 local planets = {
     {
@@ -1077,8 +1078,31 @@ local planets = {
         },
         prerequisite = "planet-discovery-asteroid-belt-outer",
     },
+    {
+        type = "space-location",
+        name = "rsu-solar-system-edge", -- Solar System Edge, but the real solar system instead of the space age one.
+        object_properties = {
+            type = "edge", -- This location is the edge of a star system.
+            parent_object = "sol", -- The star system this edge is the edge of.
+        },
+        icon = edge_png,
+        icon_size = 64,
+        gravity_pull = -10,
+        distance = 150, -- About 70 AU, not at all accurate (real value would be closer to 50,000 AU)
+        orientation = ( 359 / 360 ) - ( 45 / 360 ),
+        magnitude = 1,
+        asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.nauvis_vulcanus, 0.9),
+        prerequisite = "planet-discovery-asteroid-belt-outer",
+    },
 
-}
+-- Mod compatibility, in case a mod wants to add extra planets to RCU. They define the global value in their data stage if it doesn't already exist and then they can modify our planets or add new ones.
+if object_functions then
+    for _, object_function in pairs(object_functions) do
+        if object_function and type(object_function) == "function" then
+            object_function(planets)
+        end
+    end
+end
 
 for i, Planet in pairs(planets) do
     if Planet.object_properties then
@@ -1099,6 +1123,9 @@ for i, Planet in pairs(planets) do
                 end
             end
         elseif properties.type == "moon" then
+            -- Do something!
+        elseif properties.type == "edge" then
+            Planet.draw_orbit = false
         end
         
         if not Planet.label_orientation then
@@ -1106,6 +1133,12 @@ for i, Planet in pairs(planets) do
             if Planet.label_orientation > 1 then
                 Planet.label_orientation = Planet.label_orientation % 1 -- Label orientation cannot be greater than 1.
             end
+        end
+
+        if not Planet.orientation then
+            --need parent's orientation -- Not nessecary, this is already relative to the parent object (if any) and even then, only a default.
+            log("Planet \"" .. Planet.name .. "\" has no orientation property! It's been replaced with 270 / 360.")
+            Planet.orientation = 270 / 360
         end
 
         local ParentObject = nil
@@ -1128,12 +1161,6 @@ for i, Planet in pairs(planets) do
             Planet.draw_orbit = false
         end
 
-    end
-
-    if not Planet.orientation then
-        --need parent's orientation -- Not nessecary, this is already relative to the parent object (if any) and even then, only a default.
-        log("Planet \"" .. Planet.name .. "\" has no orientation property! It's been replaced with 270 / 360.")
-        Planet.orientation = 270 / 360
     end
 
     -- Check if the planet has an icon but does not have a starmap_icon
@@ -1803,6 +1830,7 @@ local space_connections = {
         subgroup = "planet-connections",
         from = "pluto",
         to = "charon",
+        moon = true,
         order = "j[pluto]-v[charon]",
         length = 1.5,
         asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.aquilo_solar_system_edge),
@@ -1819,6 +1847,20 @@ local space_connections = {
         to = "pluto",
         order = "m[gonggong]-j[pluto]",
         length = 5.5,
+        asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.aquilo_solar_system_edge),
+        space_effects = {
+            background_color = { r = 0.3, g = 0.2, b = 0.6 },
+            particle_color = { r = 0.6, g = 0.5, b = 0.5 }
+        }
+    },
+    {
+        type = "space-connection",
+        name = "asteroid-belt-outer-solar-system-edge",
+        subgroup = "planet-connections",
+        from = "asteroid-belt-outer",
+        to = "rsu-solar-system-edge",
+        order = "a[sol]-b[edge]",
+        length = 10,
         asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.aquilo_solar_system_edge),
         space_effects = {
             background_color = { r = 0.3, g = 0.2, b = 0.6 },
@@ -1884,8 +1926,7 @@ for i, SpaceConnection in pairs(space_connections) do
         for _,Planet in pairs(planets) do
             if Planet.name == SpaceConnection.from then
                 From = Planet
-            end
-            if Planet.name == SpaceConnection.to then
+            elseif Planet.name == SpaceConnection.to then
                 To = Planet
             end
         end

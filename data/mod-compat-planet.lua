@@ -94,6 +94,16 @@ if mods["maraxsis"] then -- Check if the mod exists, just in case. Plus it's a c
 
     merge_prerequisites(maraxsis_discovery, neptune_discovery)
 
+    for i, technology in pairs(data.raw["technology"]) do
+        if technology and technology.prerequisites then
+            for j, prerequisite in pairs(technology.prerequisites) do
+                if prerequisite == neptune_discovery.name then
+                    data.raw["technology"][i].prerequisites[j] = maraxsis_discovery.name
+                end
+            end
+        end
+    end
+
     data.raw[neptune.type][neptune.name] = nil -- Shouldn't crash the game, but a likely cause if it does.
     data.raw[neptune_discovery.type][neptune_discovery.name] = nil -- Shouldn't crash the game, but a likely cause if it does.
 end
